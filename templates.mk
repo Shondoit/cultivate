@@ -103,3 +103,23 @@ grow-$(1): $$($($(1))_DIR) | $(STAMP_DIR)
 
 endif
 endef
+
+
+define GRAFT_tmpl
+ifdef $(1)
+
+### Specify the directory where the bundle should be created.
+### Allow the user to override this folder if desired.
+$($(1))_GRAFT_DIR?=$(GRAFT_DIR)/$(2)
+
+### Define bundle-seed as a pseudo target.
+### graft-seed is an actual target; a stamp with this name must be created.
+.PHONY: bundle-$(1)
+bundle-$(1): graft-$(1)
+
+### Set some default dependencies: the build dir and the graft dir.
+### The actual grafting is delegated to the seed files.
+graft-$(1): $(SEED_DIR)/$(1).mk grow-$(1) | $$($($(1))_GRAFT_DIR) $(STAMP_DIR)
+
+endif
+endef

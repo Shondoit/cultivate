@@ -27,9 +27,11 @@ HASHCHECK:=shasum -a 256
 
 SEED_LIST=$(basename $(notdir $(wildcard $(SEED_DIR)/*.mk)))
 vpath grow-% $(STAMP_DIR)
+vpath graft-% $(STAMP_DIR)
 include $(SEED_DIR)/*.mk
 
 $(STAMP_DIR): ; mkdir -p $@
+$(GRAFT_DIR)/%: ; mkdir -p $@
 
 ### Evaluate the seed template with the seed name, package name and URI.
 $(foreach seed,$(SEED_LIST),\
@@ -43,4 +45,8 @@ $(foreach seed,$(SEED_LIST),\
 ### Evaluate the grow template with the seed name and the sprout folder name.
 $(foreach seed,$(SEED_LIST),\
 	$(eval $(call GROW_tmpl,$(seed),$(seed)-$($($(seed))_VER)))\
+)
+### Evaluate the graft template with the seed name and the graft folder name.
+$(foreach seed,$(SEED_LIST),\
+	$(eval $(call GRAFT_tmpl,$(seed),$(seed)-$($($(seed))_VER)))\
 )
