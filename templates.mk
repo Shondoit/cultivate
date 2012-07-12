@@ -75,6 +75,12 @@ $$($($(1))_DIR): $(SOW_DIR)/$(2) sprout.py $(wildcard $(PATCH_DIR)/$(1)/*.patch)
 	mkdir -p $$($($(1))_DIR)$(TMP_EXT)
 	### All the necessary variables are sent using the above environment variables.
 	$(PYTHON) sprout.py
+	### If files are available for copying, do so.
+	test ! -d $(PATCH_DIR)/$(1) \
+		|| cp -rf $(PATCH_DIR)/$(1)/* $$($($(1))_DIR)$(TMP_EXT)
+	### If these files include patches then apply these. Fails if not succesful.
+	test ! -f $$($($(1))_DIR)$(TMP_EXT)/*.patch \
+		|| ./patch-all.sh $$($($(1))_DIR)$(TMP_EXT)
 	rm -rf $$($($(1))_DIR)
 	mv $$($($(1))_DIR)$(TMP_EXT) $$($($(1))_DIR)
 endif
