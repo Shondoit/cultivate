@@ -97,9 +97,16 @@ ifdef $(1)
 .PHONY: build-$(1)
 build-$(1): grow-$(1)
 
+### If we have a package with dependencies,
+### assume it's a virtual package and build only the sub-sources.
+ifdef $($(1))_DEPS
+.PHONY: grow-$(1)
+grow-$(1): $(addprefix grow-,$($($(1))_DEPS))
+else
 ### Set some default dependencies: the source and the stamp dir.
 ### The actual building is delegated to the seed files.
 grow-$(1): $$($($(1))_DIR) | $(STAMP_DIR)
+endif
 
 endif
 endef
