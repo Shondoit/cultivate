@@ -50,3 +50,12 @@ $(foreach seed,$(SEED_LIST),\
 $(foreach seed,$(SEED_LIST),\
 	$(eval $(call GRAFT_tmpl,$(seed),$(seed)-$($($(seed))_VER)))\
 )
+
+### Clean all the temporary/failed target files.
+.PHONY: weed clean
+clean: weed
+weed:
+	@echo [$@]
+	rm -f $(SOW_DIR)/*$(TMP_EXT)
+	rm -rf $(SIG_DIR)/*$(TMP_EXT)
+	rm -rf $(SPROUT_DIR)/*$(TMP_EXT)
