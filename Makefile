@@ -9,3 +9,6 @@ specify-target:
 
 PWD:=$(shell pwd)
 TMP_EXT?=~
+
+SEED_LIST=$(basename $(notdir $(wildcard $(SEED_DIR)/*.mk)))
+include $(SEED_DIR)/*.mk
