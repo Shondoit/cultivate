@@ -1,3 +1,5 @@
+include osdetect.mk
+
 .DEFAULT: specify-target
 .PHONY: specify-target
 specify-target:
