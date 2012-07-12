@@ -28,6 +28,18 @@ ifdef $($(1))_SIG
 		$($($(1))_KEYS)
 endif
 endif
+### If we have a way to verify hashes and a hash is provided, then verify it.
+### If the hash fails, then print the expected and actual hashes so that
+### the user can easily update the hash when needed.
+ifdef HASHCHECK
+ifdef $($(1))_HASH
+	@test `$(HASHCHECK) $(SOW_DIR)/$(2)$(TMP_EXT) | cut -d' ' -f1` = $($($(1))_HASH) \
+		|| (printf "\nExpected hash: %s\nActual hash:   %s\n" \
+			$($($(1))_HASH) \
+			`$(HASHCHECK) $(SOW_DIR)/$(2)$(TMP_EXT) | cut -d' ' -f1` \
+		&& exit 1)
+endif
+endif
 	rm -f $(SOW_DIR)/$(2)
 	mv $(SOW_DIR)/$(2)$(TMP_EXT) $(SOW_DIR)/$(2)
 endif

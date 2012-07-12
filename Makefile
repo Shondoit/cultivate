@@ -21,6 +21,7 @@ else
 	WGET:=wget --no-use-server-timestamps
 endif
 SIGCHECK:=./verify-sig.sh
+HASHCHECK:=shasum -a 256
 
 SEED_LIST=$(basename $(notdir $(wildcard $(SEED_DIR)/*.mk)))
 include $(SEED_DIR)/*.mk
