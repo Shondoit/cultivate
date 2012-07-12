@@ -15,10 +15,12 @@ ifdef OS_WIN
 	### MinGW's wget uses the download time as modified time (which is what we want),
 	### but it does not support the --no-use-server-timestamps flag.
 	WGET:=wget
+	PYTHON:=/c/Python27/python
 else
 	### On Linux and OSX, wget uses the server's modified time by default
 	### so we need to use the --no-use-server-timestamps flag instead.
 	WGET:=wget --no-use-server-timestamps
+	PYTHON:=$(shell which python)
 endif
 SIGCHECK:=./verify-sig.sh
 HASHCHECK:=shasum -a 256
@@ -29,4 +31,9 @@ include $(SEED_DIR)/*.mk
 ### Evaluate the seed template with the seed name, package name and URI.
 $(foreach seed,$(SEED_LIST),\
 	$(eval $(call SOW_tmpl,$(seed),$($($(seed))_PKG),$($($(seed))_URI)))\
+)
+### Evaluate the sprout template with the seed name,
+### the desired folder name and the package name.
+$(foreach seed,$(SEED_LIST),\
+	$(eval $(call SPROUT_tmpl,$(seed),$($($(seed))_PKG),$(seed)-$($($(seed))_VER)))\
 )

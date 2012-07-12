@@ -46,3 +46,38 @@ endif
 
 endif
 endef
+
+
+define SPROUT_tmpl
+ifdef $(1)
+
+### Specify the directory where the source should be.
+### Allow the user to override this folder if desired.
+$($(1))_DIR?=$(SPROUT_DIR)/$(3)
+### Define some pseudo-targets: sprout-seed, unpack-seed.
+.PHONY: sprout-$(1) unpack-$(1)
+sprout-$(1): $$($($(1))_DIR)
+unpack-$(1): sprout-$(1)
+
+### If we have an actual package to unpack/install then do so.
+ifdef $($(1))_PKG
+### Define some paths that sprout.py can use.
+$$($($(1))_DIR): export PKG_SOURCE     := $(SOW_DIR)/$(2)
+$$($($(1))_DIR): export PKG_SOURCE_PSX := $$(abspath $(SOW_DIR)/$(2))
+$$($($(1))_DIR): export PKG_OUTPUT     := $$($($(1))_DIR)$(TMP_EXT)
+$$($($(1))_DIR): export PKG_OUTPUT_PSX := $$(abspath $$($($(1))_DIR)$(TMP_EXT))
+$$($($(1))_DIR): export PKG_CMDLINE    := $$(value $$($(1))_CMD)
+### Make this target dependent on the package, the unpack script (sprout.py)
+### As well as any files provided in the patches/seedname folder.
+$$($($(1))_DIR): $(SOW_DIR)/$(2) sprout.py $(wildcard $(PATCH_DIR)/$(1)/*.patch)
+	@echo [$$@]
+	rm -rf $$($($(1))_DIR)$(TMP_EXT)
+	mkdir -p $$($($(1))_DIR)$(TMP_EXT)
+	### All the necessary variables are sent using the above environment variables.
+	$(PYTHON) sprout.py
+	rm -rf $$($($(1))_DIR)
+	mv $$($($(1))_DIR)$(TMP_EXT) $$($($(1))_DIR)
+endif
+
+endif
+endef
