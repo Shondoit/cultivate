@@ -50,6 +50,10 @@ $(foreach seed,$(SEED_LIST),\
 $(foreach seed,$(SEED_LIST),\
 	$(eval $(call GRAFT_tmpl,$(seed),$(seed)-$($($(seed))_VER)))\
 )
+### Evaluate the harvest template with the seed name and the desired package name.
+$(foreach seed,$(SEED_LIST),\
+	$(eval $(call HARVEST_tmpl,$(seed),$(seed)-$($($(seed))_VER)-$(PLATFORM)-$(ARCH_TYPE).tar.gz))\
+)
 
 ### Clean all the temporary/failed target files.
 .PHONY: weed clean

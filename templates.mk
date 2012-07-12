@@ -123,3 +123,23 @@ graft-$(1): $(SEED_DIR)/$(1).mk grow-$(1) | $$($($(1))_GRAFT_DIR) $(STAMP_DIR)
 
 endif
 endef
+
+
+define HARVEST_tmpl
+ifdef $(1)
+
+### Define some pseudo-targets: harvest-seed, package-seed.
+.PHONY: harvest-$(1) package-$(1)
+harvest-$(1): $(HARVEST_DIR)/$(2)
+package-$(1): harvest-$(1)
+
+### Make it dependent on the graft so that it will automatically repackage.
+$(HARVEST_DIR)/$(2): graft-$(1)
+	mkdir -p "$(HARVEST_DIR)"
+	rm -f $(HARVEST_DIR)/$(2)$(TMP_EXT)
+	cd $$($($(1))_GRAFT_DIR) && tar -cf "$(HARVEST_DIR)/$(2)$(TMP_EXT)" *
+	rm -f $(HARVEST_DIR)/$(2)
+	mv $(HARVEST_DIR)/$(2)$(TMP_EXT) $(HARVEST_DIR)/$(2)
+
+endif
+endef
