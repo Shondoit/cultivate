@@ -87,3 +87,19 @@ endif
 
 endif
 endef
+
+
+define GROW_tmpl
+ifdef $(1)
+
+### Define build-seed as a pseudo target.
+### grow-seed is an actual target; a stamp with this name must be created.
+.PHONY: build-$(1)
+build-$(1): grow-$(1)
+
+### Set some default dependencies: the source and the stamp dir.
+### The actual building is delegated to the seed files.
+grow-$(1): $$($($(1))_DIR) | $(STAMP_DIR)
+
+endif
+endef

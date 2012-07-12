@@ -26,7 +26,10 @@ SIGCHECK:=./verify-sig.sh
 HASHCHECK:=shasum -a 256
 
 SEED_LIST=$(basename $(notdir $(wildcard $(SEED_DIR)/*.mk)))
+vpath grow-% $(STAMP_DIR)
 include $(SEED_DIR)/*.mk
+
+$(STAMP_DIR): ; mkdir -p $@
 
 ### Evaluate the seed template with the seed name, package name and URI.
 $(foreach seed,$(SEED_LIST),\
@@ -36,4 +39,8 @@ $(foreach seed,$(SEED_LIST),\
 ### the desired folder name and the package name.
 $(foreach seed,$(SEED_LIST),\
 	$(eval $(call SPROUT_tmpl,$(seed),$($($(seed))_PKG),$(seed)-$($($(seed))_VER)))\
+)
+### Evaluate the grow template with the seed name and the sprout folder name.
+$(foreach seed,$(SEED_LIST),\
+	$(eval $(call GROW_tmpl,$(seed),$(seed)-$($($(seed))_VER)))\
 )
