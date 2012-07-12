@@ -20,6 +20,7 @@ else
 	### so we need to use the --no-use-server-timestamps flag instead.
 	WGET:=wget --no-use-server-timestamps
 endif
+SIGCHECK:=./verify-sig.sh
 
 SEED_LIST=$(basename $(notdir $(wildcard $(SEED_DIR)/*.mk)))
 include $(SEED_DIR)/*.mk

@@ -14,6 +14,20 @@ $(SOW_DIR)/$(2): $(SEED_DIR)/$(1).mk
 	mkdir -p $(SOW_DIR)
 	$(WGET) -O "$(SOW_DIR)/$(2)$(TMP_EXT)" "$(3)" \
 		--no-check-certificate --tries=3
+### If we have a way to verify sigs and we have an actual sig, then verify it.
+ifdef SIGCHECK
+ifdef $($(1))_SIG
+	mkdir -p $(SIG_DIR)
+	$(WGET) -O "$(SIG_DIR)/$(2).asc$(TMP_EXT)" "$($($(1))_SIG)" \
+		--no-check-certificate --tries=3
+	mv $(SIG_DIR)/$(2).asc$(TMP_EXT) $(SIG_DIR)/$(2).asc
+	### Use verify-sig.sh with the provided list of allowed keys.
+	KEY_DIR=$(KEY_DIR) $(SIGCHECK) \
+		$(SIG_DIR)/$(2).asc \
+		$(SOW_DIR)/$(2)$(TMP_EXT) \
+		$($($(1))_KEYS)
+endif
+endif
 	rm -f $(SOW_DIR)/$(2)
 	mv $(SOW_DIR)/$(2)$(TMP_EXT) $(SOW_DIR)/$(2)
 endif
